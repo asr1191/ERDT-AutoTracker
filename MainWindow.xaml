@@ -5,16 +5,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ERDT"
         mc:Ignorable="d"
-        Title="Elden Ring Death Tracker | AutoTracker" Height="282" Width="661"
+        Title="Elden Ring Death Tracker | AutoTracker" Height="282" Width="626"
         ResizeMode="NoResize">
-    <Grid Height="Auto" VerticalAlignment="Top" Margin="0,0,0,0">
+    <Grid Height="102" VerticalAlignment="Top">
         <Grid.RowDefinitions>
             <RowDefinition/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="133*"/>
-            <ColumnDefinition Width="378*"/>
-            <ColumnDefinition Width="150*"/>
+            <ColumnDefinition Width="528*"/>
         </Grid.ColumnDefinitions>
         <StackPanel Grid.Column="0" Grid.Row="0" Margin="5,5,5,5">
             <Button Height="22">Login</Button>
@@ -32,5 +31,8 @@
             <TextBox x:Name="savefilePathTextBox" Height="Auto" IsReadOnly="True" Text="Please select your Elden Ring savefile" VerticalContentAlignment="Center" />
             <Button Content="Browse Savefile" Margin="3,0,0,0" Grid.Column="1" Click="SelectSave_Click"/>
         </Grid>
+        <TextBox x:Name="nameTextBox" IsReadOnly="True" Grid.Column="1" HorizontalAlignment="Left" Margin="5,56,0,0" TextWrapping="Wrap" Text="Name" VerticalAlignment="Top" Width="120"/>
+        <TextBox x:Name="deathCountTextBox" IsReadOnly="True" Grid.Column="1" HorizontalAlignment="Left" Margin="5,79,0,0" TextWrapping="Wrap" Text="0 Deaths" VerticalAlignment="Top" Width="120"/>
+        <CheckBox x:Name="trackBox" Grid.Column="1" IsEnabled="False" Content="Track Deaths" HorizontalAlignment="Left" VerticalAlignment="Top" Checked="TrackBox_Checked" Unchecked="TrackBox_Unchecked" Margin="137,57,0,0"/>
     </Grid>
 </Window>

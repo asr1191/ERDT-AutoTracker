@@ -1,17 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
+using ERDT.services;
 using Microsoft.Win32;
 
 namespace ERDT
@@ -21,6 +13,10 @@ namespace ERDT
     /// </summary>
     public partial class MainWindow : Window
     {
+        SavefileWatcher savefileWatcher;
+        SavefileProcessor savefileProcessor;
+        string saveFilePath;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -41,7 +37,7 @@ namespace ERDT
 
                 var mostRecentDirectory = eldenRingDirectory.GetDirectories()
                     .OrderBy(dir => dir.LastWriteTime)
-                    .FirstOrDefault();
+                    .LastOrDefault();
 
                 if (mostRecentDirectory != null)
                 {
@@ -54,11 +50,9 @@ namespace ERDT
 
             if (ofd.ShowDialog() == true)
             {
-                var selectedFilePath = ofd.FileName;
-                savefilePathTextBox.Text = selectedFilePath;
+                saveFilePath = ofd.FileName; 
+                savefilePathTextBox.Text = saveFilePath;
             }
-
-
         }
 
         private void Ofd_VerifySaveFile(object sender, System.ComponentModel.CancelEventArgs e)
@@ -76,19 +70,51 @@ namespace ERDT
                         if (magicString.Equals("BND4"))
                         {
                             Console.WriteLine("Magic string found (BND4: " + selectedFilePath + ")");
+
+                            savefileProcessor = new SavefileProcessor(selectedFilePath);
+                            savefileProcessor.charDataPopulated += onCharDataPopulated;
+                            savefileProcessor.populateCharDataAsync();
+
                         } else
                         {
+                            trackBox.IsEnabled = false;
+                            trackBox.IsChecked = false;
                             Console.WriteLine("Not a valid file format");
                         }
-
                     }
                 }
-
-
             } catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
             }
+        }
+
+        private void onCharDataPopulated(object sender, EventArgs e)
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                nameTextBox.Text = savefileProcessor.characterDataArray[1].name;
+                deathCountTextBox.Text = savefileProcessor.characterDataArray[1].deathTotal.ToString();
+                trackBox.IsEnabled = true;
+            });
+        }
+
+        private void TrackBox_Checked(object sender, RoutedEventArgs e)
+        {
+            savefileProcessor.populateCharDataAsync();
+            savefileWatcher = new SavefileWatcher(saveFilePath);
+            savefileWatcher.SavefileChanged += onSaveFileChanged;
+        }
+
+        private void TrackBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            savefileWatcher.SavefileChanged -= onSaveFileChanged;
+            savefileWatcher.stopWatching();
+        }
+
+        private void onSaveFileChanged(object sender, EventArgs e)
+        {
+            savefileProcessor.populateCharDataAsync();
         }
     }
 }
