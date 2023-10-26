@@ -9,18 +9,36 @@ namespace ERDT
         private static readonly int _slotLength = 0x280010;
         private readonly int _startAddress;
         private readonly string _filepath;
-
         private int _version;
-        public string name;
+
+        public int slotIndex;
+        public string Name { get; set; }
         public int playtime;
-        public int runeLevel;
-        public int deathTotal;
+        public int RuneLevel { get; set; }
+        public int Deaths { get; set; }
 
         public CharacterData(int index, string filepath)
         {
+            slotIndex = index;
             _startAddress = _slotStart + (index * _slotLength);
             _filepath = filepath;
             getData();
+        }
+
+        private CharacterData(int index) {
+            _startAddress = _slotStart + (index * _slotLength);
+        }
+
+        public static CharacterData getEmptyCharacterData(int index)
+        {
+            CharacterData emptyData = new CharacterData(index);
+            emptyData.Name = $"Empty Slot ({index + 1})";
+            emptyData.RuneLevel = 0;
+            emptyData.Deaths = 0;
+            emptyData.playtime = 0;
+            emptyData._version = 150;
+
+            return emptyData;
         }
 
         private void SkipLookupEntry(FileStream fileStream, BinaryReader reader)
@@ -76,11 +94,14 @@ namespace ERDT
                     {
                         SkipLookupEntry(fileStream, reader);
                     }
+                        
+                    fileStream.Seek(0x60, SeekOrigin.Current);
+                    RuneLevel = reader.ReadInt32();
 
-                    fileStream.Seek(0x94, SeekOrigin.Current);
+                    fileStream.Seek(0x30, SeekOrigin.Current);
                     var nameBytes = reader.ReadBytes(0x20);
                     var nameString = Encoding.Unicode.GetString(nameBytes);
-                    name = nameString.IndexOf("\0") == -1 ? nameString : nameString.Substring(0, nameString.IndexOf("\0"));
+                    Name = nameString.IndexOf("\0") == -1 ? nameString : nameString.Substring(0, nameString.IndexOf("\0"));
 
                     fileStream.Seek(0x9418, SeekOrigin.Current);
 
@@ -99,7 +120,7 @@ namespace ERDT
                     }
 
                     fileStream.Seek(0x1CA44, SeekOrigin.Current);
-                    deathTotal = (int)reader.ReadUInt32();
+                    Deaths = (int)reader.ReadUInt32();
                 }
             }
         }

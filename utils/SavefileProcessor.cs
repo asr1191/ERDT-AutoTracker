@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Documents;
 
 namespace ERDT
 {
@@ -10,10 +13,8 @@ namespace ERDT
         private readonly int _charManifestAddress = 0x1901D04;
 
         public CharacterData[] characterDataArray;
-
         public EventHandler charDataPopulated;
-
-
+        
         public SavefileProcessor(string filePath)
         {
             _filePath = filePath;
@@ -27,6 +28,11 @@ namespace ERDT
                 populateCharData();
                 charDataPopulated?.Invoke(this, EventArgs.Empty);
             });
+        }
+
+        public List<CharacterData> getCharacterDataList()
+        {
+            return characterDataArray.Select((charData, index) => charData ?? CharacterData.getEmptyCharacterData(index)).ToList();
         }
 
         private void populateCharData()

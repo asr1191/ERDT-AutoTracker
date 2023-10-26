@@ -1,9 +1,10 @@
 ﻿using System;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows;
-using ERDT.services;
+using System.Windows.Controls;
 using Microsoft.Win32;
 
 namespace ERDT
@@ -11,11 +12,46 @@ namespace ERDT
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
         SavefileWatcher savefileWatcher;
         SavefileProcessor savefileProcessor;
         string saveFilePath;
+
+        private CharacterData selectedCharacterData;
+        public CharacterData SelectedCharacterData
+        {
+            get => selectedCharacterData;
+            set
+            {
+                if (selectedCharacterData != value)
+                {
+                    selectedCharacterData = value;
+                    OnPropertyChanged(nameof(SelectedCharacterData));
+                }
+            }
+        }
+
+        private int previouslySelectedIndex = -2;
+        public int PreviouslySelectedIndex
+        {
+            get => previouslySelectedIndex;
+            set
+            {
+                if (previouslySelectedIndex != value && value != -1) // Disregard ListView's autoupdate
+                {
+                    previouslySelectedIndex = value;
+                    OnPropertyChanged(nameof(PreviouslySelectedIndex));
+                }
+            }
+        }
+
 
         public MainWindow()
         {
@@ -26,7 +62,6 @@ namespace ERDT
         {
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.Filter = "Elden Ring Savefile (*.sl2)|*.sl2";
-
             ofd.FileOk += Ofd_VerifySaveFile;
 
             try
@@ -58,6 +93,7 @@ namespace ERDT
         private void Ofd_VerifySaveFile(object sender, System.ComponentModel.CancelEventArgs e)
         {
             var selectedFilePath = (sender as OpenFileDialog).FileName;
+            PreviouslySelectedIndex = -2;
 
             try
             {
@@ -79,6 +115,8 @@ namespace ERDT
                         {
                             trackBox.IsEnabled = false;
                             trackBox.IsChecked = false;
+                            characterListView.IsEnabled = false;
+                            characterListView.Visibility = Visibility.Collapsed;
                             Console.WriteLine("Not a valid file format");
                         }
                     }
@@ -93,9 +131,16 @@ namespace ERDT
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
-                nameTextBox.Text = savefileProcessor.characterDataArray[1].name;
-                deathCountTextBox.Text = savefileProcessor.characterDataArray[1].deathTotal.ToString();
                 trackBox.IsEnabled = true;
+
+                characterListView.Visibility = Visibility.Visible;
+                characterListView.IsEnabled = true;
+                characterListView.ItemsSource = savefileProcessor.getCharacterDataList();
+
+                if (PreviouslySelectedIndex != -2)
+                {
+                    characterListView.SelectedIndex = PreviouslySelectedIndex;
+                }
             });
         }
 
@@ -115,6 +160,12 @@ namespace ERDT
         private void onSaveFileChanged(object sender, EventArgs e)
         {
             savefileProcessor.populateCharDataAsync();
+        }
+
+        private void characterListView_SelectionChanged(object sender, RoutedEventArgs e)
+        {
+            SelectedCharacterData = (CharacterData) (sender as ListView).SelectedItem;
+            PreviouslySelectedIndex = characterListView.SelectedIndex;
         }
     }
 }

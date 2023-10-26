@@ -2,12 +2,19 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
         xmlns:local="clr-namespace:ERDT"
         mc:Ignorable="d"
-        Title="Elden Ring Death Tracker | AutoTracker" Height="282" Width="626"
-        ResizeMode="NoResize">
-    <Grid Height="102" VerticalAlignment="Top">
+        Title="Elden Ring Death Tracker | AutoTracker" Height="300" Width="650"
+        ResizeMode="NoResize"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        >
+    <Window.Resources>
+        <local:DefaultCharNameConverter x:Key="DefaultCharNameConverter"/>
+        <local:DefaultCharDeathsConverter x:Key="DefaultCharDeathsConverter"/>
+    </Window.Resources>
+
+    <Grid Height="257" VerticalAlignment="Top">
         <Grid.RowDefinitions>
             <RowDefinition/>
         </Grid.RowDefinitions>
@@ -15,11 +22,7 @@
             <ColumnDefinition Width="133*"/>
             <ColumnDefinition Width="528*"/>
         </Grid.ColumnDefinitions>
-        <StackPanel Grid.Column="0" Grid.Row="0" Margin="5,5,5,5">
-            <Button Height="22">Login</Button>
-            <TextBlock HorizontalAlignment="Center" Foreground="Green">Logged in as</TextBlock>
-            <TextBlock HorizontalAlignment="Center" Foreground="Green" TextWrapping="Wrap">voltraxic@gmail.com</TextBlock>
-        </StackPanel>
+        <StackPanel Grid.Column="0" Grid.Row="0" Margin="5,5,5,5"/>
         <Grid Grid.Column="1" Height="22" VerticalAlignment="Top" Margin="5,5,5,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="109*"/>
@@ -28,11 +31,80 @@
             <Grid.RowDefinitions>
                 <RowDefinition/>
             </Grid.RowDefinitions>
-            <TextBox x:Name="savefilePathTextBox" Height="Auto" IsReadOnly="True" Text="Please select your Elden Ring savefile" VerticalContentAlignment="Center" />
-            <Button Content="Browse Savefile" Margin="3,0,0,0" Grid.Column="1" Click="SelectSave_Click"/>
+            <TextBox 
+                x:Name="savefilePathTextBox" 
+                Height="Auto" IsReadOnly="True" 
+                Text="Please select your Elden Ring savefile"
+                VerticalContentAlignment="Center" Margin="-2,0,2,0" 
+            />
+            <Button 
+                Content="Browse Savefile" 
+                Margin="3,0,0,0"
+                Grid.Column="1"
+                Click="SelectSave_Click"
+            />
         </Grid>
-        <TextBox x:Name="nameTextBox" IsReadOnly="True" Grid.Column="1" HorizontalAlignment="Left" Margin="5,56,0,0" TextWrapping="Wrap" Text="Name" VerticalAlignment="Top" Width="120"/>
-        <TextBox x:Name="deathCountTextBox" IsReadOnly="True" Grid.Column="1" HorizontalAlignment="Left" Margin="5,79,0,0" TextWrapping="Wrap" Text="0 Deaths" VerticalAlignment="Top" Width="120"/>
-        <CheckBox x:Name="trackBox" Grid.Column="1" IsEnabled="False" Content="Track Deaths" HorizontalAlignment="Left" VerticalAlignment="Top" Checked="TrackBox_Checked" Unchecked="TrackBox_Unchecked" Margin="137,57,0,0"/>
+        <TextBox 
+            x:Name="nameTextBox" 
+            IsReadOnly="True" 
+            Grid.Column="1" 
+            HorizontalAlignment="Left" 
+            Margin="5,39,0,0" 
+            TextWrapping="Wrap"
+            Text="{Binding SelectedCharacterData, Converter={StaticResource DefaultCharNameConverter}}"
+            VerticalAlignment="Top" 
+            Width="120"
+        />
+        <TextBox 
+            x:Name="deathCountTextBox" 
+            IsReadOnly="True"
+            Grid.Column="1"
+            HorizontalAlignment="Left" 
+            Margin="5,62,0,0"
+            TextWrapping="Wrap" 
+            Text="{Binding SelectedCharacterData, Converter={StaticResource DefaultCharDeathsConverter}}"
+            VerticalAlignment="Top"
+            Width="120"
+        />
+        <CheckBox 
+            x:Name="trackBox" 
+            Grid.Column="1"
+            IsEnabled="False"
+            Content="Track Deaths"
+            HorizontalAlignment="Left" 
+            VerticalAlignment="Top"
+            Checked="TrackBox_Checked"
+            Unchecked="TrackBox_Unchecked" 
+            Margin="134,40,0,0"
+        />
+        <ListView 
+            Grid.Column="1"
+            x:Name="characterListView"
+            IsEnabled="True" 
+            Visibility="Visible"
+            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+            SelectionMode="Single"
+            SelectionChanged="characterListView_SelectionChanged"
+            Margin="5,90,271,10"
+        >
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Name">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Name}" Width="100"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="Level">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding RuneLevel}" Width="50" TextAlignment="Center"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                </GridView>
+            </ListView.View>
+        </ListView>
     </Grid>
 </Window>

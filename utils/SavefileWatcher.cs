@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace ERDT.services
+namespace ERDT
 {
     internal class SavefileWatcher
     {
