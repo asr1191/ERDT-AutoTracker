@@ -2,8 +2,28 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:ERDT"
-             StartupUri="MainWindow.xaml">
+             xmlns:viewModel="clr-namespace:ERDT.MVVM.ViewModel"
+             xmlns:view="clr-namespace:ERDT.MVVM.View"
+             StartupUri="MainWindowRedesign.xaml">
     <Application.Resources>
-         
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Theme/MenuButtonTheme.xaml" />
+                <ResourceDictionary Source="Theme/TextboxTheme.xaml" />
+
+                
+            </ResourceDictionary.MergedDictionaries>
+            
+            <DataTemplate DataType="{x:Type viewModel:LoginViewModel}">
+                <view:HomeView/>
+            </DataTemplate>
+			<DataTemplate DataType="{x:Type viewModel:SavefileViewModel}">
+				<view:SavefileView/>
+			</DataTemplate>
+			<DataTemplate DataType="{x:Type viewModel:CharacterViewModel}">
+				<view:CharacterView/>
+			</DataTemplate>
+
+		</ResourceDictionary>
     </Application.Resources>
 </Application>

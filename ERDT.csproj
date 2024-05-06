@@ -114,13 +114,29 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Core\ObservableObject.cs" />
+    <Compile Include="Core\RelayCommand.cs" />
+    <Compile Include="Core\SharedDataService.cs" />
     <Compile Include="MainWindowRedesign.xaml.cs">
       <DependentUpon>MainWindowRedesign.xaml</DependentUpon>
     </Compile>
-    <Compile Include="models\CharacterData.cs" />
-    <Compile Include="utils\Converters.cs" />
-    <Compile Include="utils\SavefileProcessor.cs" />
-    <Compile Include="utils\SavefileWatcher.cs" />
+    <Compile Include="MVVM\Model\CharacterData.cs" />
+    <Compile Include="MVVM\ViewModel\CharacterViewModel.cs" />
+    <Compile Include="MVVM\ViewModel\LoginViewModel.cs" />
+    <Compile Include="MVVM\ViewModel\MainViewModel.cs" />
+    <Compile Include="MVVM\ViewModel\SavefileViewModel.cs" />
+    <Compile Include="MVVM\View\CharacterView.xaml.cs">
+      <DependentUpon>CharacterView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MVVM\View\LoginView.xaml.cs">
+      <DependentUpon>LoginView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MVVM\View\SavefileView.xaml.cs">
+      <DependentUpon>SavefileView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Core\Converters.cs" />
+    <Compile Include="Core\SavefileProcessor.cs" />
+    <Compile Include="Core\SavefileWatcher.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -134,6 +150,18 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="MainWindowRedesign.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MVVM\View\CharacterView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MVVM\View\LoginView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MVVM\View\SavefileView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -186,6 +214,7 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="packages\Microsoft.Web.WebView2.1.0.1264.42\build\Microsoft.Web.WebView2.targets" Condition="Exists('packages\Microsoft.Web.WebView2.1.0.1264.42\build\Microsoft.Web.WebView2.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

@@ -1,20 +1,37 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Documents;
+using ERDT.Core;
 
 namespace ERDT
 {
-    internal class SavefileProcessor
+    public class SavefileProcessor : ObservableObject
     {
         private readonly string _filePath;
         private readonly int _charManifestAddress = 0x1901D04;
 
         public CharacterData[] characterDataArray;
+
+        private List<CharacterData> _characterDataArrayList;
+        public List<CharacterData> CharacterDataArrayList
+        {
+            get => _characterDataArrayList;
+            set
+            {
+                if (value != _characterDataArrayList)
+                {
+                    _characterDataArrayList = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         public EventHandler charDataPopulated;
-        
+
         public SavefileProcessor(string filePath)
         {
             _filePath = filePath;
@@ -51,6 +68,7 @@ namespace ERDT
                     }
                 }
             }
+            _characterDataArrayList = getCharacterDataList();
         }
     }
 }

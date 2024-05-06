@@ -1,0 +1,24 @@
+﻿<UserControl x:Class="ERDT.MVVM.View.HomeView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ERDT.MVVM.View"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Border
+        Background="#FF131319">
+
+        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+            <TextBlock Text="Please login to connect!"
+                       Foreground="Wheat"
+                       FontSize="20"
+                       HorizontalAlignment="Center"
+                       Margin="0,0,0,10"/>
+            <Button Content="Login using Browser"
+                    Width="150"
+                    Height="30"/>
+        </StackPanel>
+    </Border>
+</UserControl>
+   

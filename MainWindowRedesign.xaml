@@ -1,0 +1,79 @@
+﻿<Window x:Class="ERDT.MainWindowRedesign"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ERDT"
+        xmlns:viewModel="clr-namespace:ERDT.MVVM.ViewModel"
+        mc:Ignorable="d"
+        Title="MainWindowRedesign" Height="450" Width="800"
+        ResizeMode="NoResize"
+        Background="Transparent">
+
+    <Window.DataContext>
+        <viewModel:MainViewModel />
+    </Window.DataContext>
+
+    <Border Background="#272730"
+            CornerRadius="12">
+        <Border.Clip>
+            <RectangleGeometry RadiusX="12"
+                               RadiusY="12"
+                               Rect="0,0,800,450"/>
+        </Border.Clip>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="200"/>
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition  Height="75" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+
+            <TextBlock Text="AutoTracker"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Center"
+                FontSize="30"
+                Foreground="Wheat" 
+                FontFamily="Bahnschrift SemiLight Condensed"/>
+
+            <StackPanel Grid.Row="1">
+                <RadioButton Content="Login"
+                    Height="50"
+                    FontSize="20"
+                    Style="{StaticResource MenuButtonTheme}"
+                    Command="{Binding HomeViewCommand}"/>
+                
+                <RadioButton Content="Savefile"
+                    Height="50"
+                    FontSize="20"
+                    IsChecked="True"
+                    Style="{StaticResource MenuButtonTheme}"
+                    Command="{Binding SavefileViewCommand}"/>
+                
+                <RadioButton Content="Character"
+                    Height="50"
+                    FontSize="20"
+                    Style="{StaticResource MenuButtonTheme}"
+                    Command="{Binding CharacterViewCommand}"/>
+                
+            </StackPanel>
+
+            <TextBlock
+                HorizontalAlignment="Left"
+                Margin="20,0,0,0"
+                Foreground="Wheat"
+                FontSize="20"
+                VerticalAlignment="Center"
+                Grid.Column="1" >
+                Welcome back, amalsraj95@gmail.com!
+            </TextBlock>
+
+            <ContentControl Grid.Row="1"
+                            Grid.Column="1"
+                            Content="{Binding CurrentView}"
+                            />
+        </Grid>
+    </Border>
+</Window>
