@@ -2,36 +2,38 @@
 {
     public class SharedDataService : ObservableObject
     {
-        private static readonly SharedDataService _instance;
+        private static SharedDataService _instance;
         public static SharedDataService Instance
         {
             get
             {
                 if (_instance == null)
                 {
-                    return new SharedDataService();
+                    
+                    _instance = new SharedDataService();
+                    return _instance;
                 }
                 return _instance;
             }
         }
 
-        public static string SavefilePath { get; set; } = "Please select your Elden Ring savefile!";
+        //public string SavefilePath { get; set; } = "Please select your Elden Ring savefile!";
 
-        //private static string _savefilePath = "Please select your Elden Ring savefile!";
-        //public static string SavefilePath
-        //{
-        //    get => _savefilePath;
-        //    set
-        //    {
-        //        if (_savefilePath != value)
-        //        {
-        //            _savefilePath = value;
-        //            OnPropertyChanged();
-        //        }
+        private string _savefilePath = "Please select your Elden Ring savefile!";
+        public string SavefilePath
+        {
+            get => _savefilePath;
+            set
+            {
+                if (_savefilePath != value)
+                {
+                    _savefilePath = value;
+                    OnPropertyChanged();
+                }
 
-        //    }
+            }
 
-        //}
+        }
 
 
         public static SavefileProcessor SavefileProcessor

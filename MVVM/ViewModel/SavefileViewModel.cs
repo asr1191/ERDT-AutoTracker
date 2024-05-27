@@ -47,7 +47,7 @@ namespace ERDT.MVVM.ViewModel
 
             if (ofd.ShowDialog() == true)
             {
-                SharedDataService.SavefilePath = ofd.FileName;
+                SharedDataService.Instance.SavefilePath = ofd.FileName;
             }
         }
 
