@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ERDT"
         xmlns:viewModel="clr-namespace:ERDT.MVVM.ViewModel"
+		xmlns:converters="clr-namespace:ERDT.Core.Converters"
         mc:Ignorable="d"
         Title="MainWindowRedesign" Height="450" Width="800"
         ResizeMode="NoResize"
@@ -13,6 +14,10 @@
     <Window.DataContext>
         <viewModel:MainViewModel />
     </Window.DataContext>
+
+	<Window.Resources>
+		<converters:RadioIndexToBoolConverter x:Key="RadioIndexToBoolConverter" />
+	</Window.Resources>
 
     <Border Background="#272730"
             CornerRadius="12">
@@ -43,20 +48,22 @@
                     Height="50"
                     FontSize="20"
                     Style="{StaticResource MenuButtonTheme}"
-                    Command="{Binding HomeViewCommand}"/>
+                    Command="{Binding HomeViewCommand}"
+					IsChecked="{Binding SelectedRadioIndex, Mode=TwoWay, Converter={StaticResource RadioIndexToBoolConverter}, ConverterParameter=0}"/>
                 
                 <RadioButton Content="Savefile"
                     Height="50"
                     FontSize="20"
-                    IsChecked="True"
                     Style="{StaticResource MenuButtonTheme}"
-                    Command="{Binding SavefileViewCommand}"/>
+                    Command="{Binding SavefileViewCommand}"
+					IsChecked="{Binding SelectedRadioIndex, Mode=TwoWay, Converter={StaticResource RadioIndexToBoolConverter}, ConverterParameter=1}"/>
                 
                 <RadioButton Content="Character"
                     Height="50"
                     FontSize="20"
                     Style="{StaticResource MenuButtonTheme}"
-                    Command="{Binding CharacterViewCommand}"/>
+                    Command="{Binding CharacterViewCommand}"
+					IsChecked="{Binding SelectedRadioIndex, Mode=TwoWay, Converter={StaticResource RadioIndexToBoolConverter}, ConverterParameter=2}"/>
                 
             </StackPanel>
 

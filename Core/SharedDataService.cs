@@ -41,9 +41,10 @@
             get; private set;
         }
 
+
         public SharedDataService()
         {
-
+            // Constructor
         }
 
         public static SavefileProcessor InitalizeSavefileProcessor(string savefilePath)

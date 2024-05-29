@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Documents;
 using ERDT.Core;
 
 namespace ERDT
@@ -42,7 +41,9 @@ namespace ERDT
         {
             Task.Run(() =>
             {
+                Console.WriteLine("Populating character data..");
                 populateCharData();
+                Console.WriteLine("Done populating character data.");
                 charDataPopulated?.Invoke(this, EventArgs.Empty);
             });
         }

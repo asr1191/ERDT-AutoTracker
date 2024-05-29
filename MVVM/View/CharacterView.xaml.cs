@@ -11,7 +11,6 @@ namespace ERDT.MVVM.View
         public CharacterView()
         {
             InitializeComponent();
-            DataContext = new CharacterViewModel();
         }
     }
 }

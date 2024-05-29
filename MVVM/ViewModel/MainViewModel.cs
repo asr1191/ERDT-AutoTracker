@@ -14,7 +14,6 @@ namespace ERDT.MVVM.ViewModel
         public CharacterViewModel CharacterVM { get; set; }
        
         private object _currentView;
-
         public object CurrentView
         {
             get => _currentView;
@@ -25,9 +24,28 @@ namespace ERDT.MVVM.ViewModel
             }
         }
 
+        private int _selectedRadioIndex = 1;
+        public int SelectedRadioIndex
+        {
+            get => _selectedRadioIndex;
+            set
+            {
+                if (_selectedRadioIndex != value)
+                {
+                    _selectedRadioIndex = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         public void onCharDataPopulated_SavefileVM(object o, EventArgs e)
         {
+            Console.WriteLine("Advancing to Character Tab");
             CurrentView = CharacterVM;
+            SelectedRadioIndex = 2;
+            Console.WriteLine("Advanced to Character Tab?");
+
+            CharacterVM.OnCharDataPopulated(o, e);
         }
 
         public MainViewModel()
@@ -37,7 +55,6 @@ namespace ERDT.MVVM.ViewModel
 
             SavefileVM = new SavefileViewModel();
             SavefileVM.CharDataPopulated += onCharDataPopulated_SavefileVM;
-
 
             // Setting CurrentView
             CurrentView = SavefileVM; // For now

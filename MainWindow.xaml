@@ -4,14 +4,15 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
         xmlns:local="clr-namespace:ERDT"
+		xmlns:converters="clr-namespace:ERDT.Core.Converters" 
         mc:Ignorable="d"
         Title="Elden Ring Death Tracker | AutoTracker" Height="300" Width="650"
         ResizeMode="NoResize"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         >
     <Window.Resources>
-        <local:DefaultCharNameConverter x:Key="DefaultCharNameConverter"/>
-        <local:DefaultCharDeathsConverter x:Key="DefaultCharDeathsConverter"/>
+        <converters:DefaultCharNameConverter x:Key="DefaultCharNameConverter"/>
+        <converters:DefaultCharDeathsConverter x:Key="DefaultCharDeathsConverter"/>
     </Window.Resources>
 
     <Grid Height="257" VerticalAlignment="Top">

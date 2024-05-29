@@ -12,10 +12,10 @@
 	<UserControl.Resources>
 		<core:SharedDataService x:Key="SharedDataServiceResource" />
 	</UserControl.Resources>
-	
+
 	<Border Background="#FF131319">
 		<StackPanel Orientation="Horizontal"
-                HorizontalAlignment="Center"
+                HorizontalAlignment="Left"
                 VerticalAlignment="Center">
 			<ListView 
             x:Name="characterListView"
@@ -25,8 +25,9 @@
             SelectionMode="Single"
             Width="170"
             Height="300"
-            Margin="0,0,20,0"
-			ItemsSource="{Binding Path=SavefileProcessor.CharacterDataArrayList, Source={x:Static core:SharedDataService.Instance}}">
+            Margin="16,0,0,0"
+			ItemsSource="{Binding Path=SavefileProcessor.CharacterDataArrayList, Source={x:Static core:SharedDataService.Instance}}"
+			SelectedItem="{Binding SelectedCharacterData, Mode=TwoWay}">
 
 				<ListView.View>
 					<GridView>
@@ -48,18 +49,24 @@
 				</ListView.View>
 			</ListView>
 			<StackPanel HorizontalAlignment="Center"
-                VerticalAlignment="Center">
-				<TextBlock FontSize="16" 
+                VerticalAlignment="Center"
+			    Margin="20"
+				Width="Auto">
+				<TextBlock 
+					FontSize="20" 
 					TextAlignment="Center"
-					Foreground="Wheat">
-            FIA THE FORLORN
-				</TextBlock>
-				<TextBlock FontSize="72" 
+					Foreground="Wheat"
+					Text="{Binding SelectedCharacterData.Name}"/>
+
+
+				<TextBlock 
+					FontSize="72" 
 					TextAlignment="Center"
-					Foreground="Wheat">
-            1234
-				</TextBlock>
-				<TextBlock FontSize="20"
+					Foreground="Wheat"
+					Text="{Binding SelectedCharacterData.Deaths}"/>
+
+				<TextBlock 
+					FontSize="20"
 					TextAlignment="Center"
 					Foreground="Wheat"
 					Margin="0,0,0,0">
