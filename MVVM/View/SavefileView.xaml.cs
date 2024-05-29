@@ -12,7 +12,6 @@ namespace ERDT.MVVM.View
         public SavefileView()
         {
             InitializeComponent();
-            DataContext = new SavefileViewModel();
         }
     }
 }

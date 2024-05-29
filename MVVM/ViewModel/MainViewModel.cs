@@ -1,4 +1,5 @@
-﻿using ERDT.Core;
+﻿using System;
+using ERDT.Core;
 
 namespace ERDT.MVVM.ViewModel
 {
@@ -8,7 +9,7 @@ namespace ERDT.MVVM.ViewModel
         public RelayCommand SavefileViewCommand { get; set; }
         public RelayCommand CharacterViewCommand { get; set; }
 
-        public LoginViewModel HomeVM { get; set; }
+        public LoginViewModel LoginVM { get; set; }
         public SavefileViewModel SavefileVM { get; set; }
         public CharacterViewModel CharacterVM { get; set; }
        
@@ -24,29 +25,29 @@ namespace ERDT.MVVM.ViewModel
             }
         }
 
+        public void onCharDataPopulated_SavefileVM(object o, EventArgs e)
+        {
+            CurrentView = CharacterVM;
+        }
 
         public MainViewModel()
         {
-            HomeVM = new LoginViewModel();
-            SavefileVM = new SavefileViewModel();
+            LoginVM = new LoginViewModel();
             CharacterVM = new CharacterViewModel();
 
+            SavefileVM = new SavefileViewModel();
+            SavefileVM.CharDataPopulated += onCharDataPopulated_SavefileVM;
+
+
+            // Setting CurrentView
             CurrentView = SavefileVM; // For now
 
-            HomeViewCommand = new RelayCommand(o =>
-            {
-                CurrentView = HomeVM;
-            });
-
-            SavefileViewCommand = new RelayCommand(o =>
-            {
-                CurrentView = SavefileVM;
-            });
-
-            CharacterViewCommand = new RelayCommand(o =>
-            {
-                CurrentView = CharacterVM;
-            });
+            // Setting up Commands for UI
+            HomeViewCommand = new RelayCommand(o => { CurrentView = LoginVM; });
+            SavefileViewCommand = new RelayCommand(o => { CurrentView = SavefileVM; });
+            CharacterViewCommand = new RelayCommand(o => { CurrentView = CharacterVM; });
         }
+
+        
     }
 }

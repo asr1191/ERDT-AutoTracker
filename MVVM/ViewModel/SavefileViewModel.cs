@@ -8,8 +8,9 @@ using Microsoft.Win32;
 
 namespace ERDT.MVVM.ViewModel
 {
-    internal class SavefileViewModel : ObservableObject
+    class SavefileViewModel : ObservableObject
     {
+        public event EventHandler CharDataPopulated;
         public RelayCommand SelectSavefileCommand
         {
             get; set;
@@ -90,23 +91,27 @@ namespace ERDT.MVVM.ViewModel
 
         private void onCharDataPopulated(object sender, EventArgs e)
         {
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                //trackBox.IsEnabled = true;
+            // Passing the event notification to MainViewModel so that CharacterView is set as the CurrentView. 
+            CharDataPopulated.Invoke(this, e);
 
-                //characterListView.Visibility = Visibility.Visible;
-                //characterListView.IsEnabled = true;
-                //characterListView.ItemsSource = savefileProcessor.getCharacterDataList();
+            //Application.Current.Dispatcher.Invoke(() =>
+            //{
+            //    //trackBox.IsEnabled = true;
 
-                //if (PreviouslySelectedIndex != -2)
-                //{
-                //    characterListView.SelectedIndex = PreviouslySelectedIndex;
-                //}
-            });
+            //    //characterListView.Visibility = Visibility.Visible;
+            //    //characterListView.IsEnabled = true;
+            //    //characterListView.ItemsSource = savefileProcessor.getCharacterDataList();
+
+            //    //if (PreviouslySelectedIndex != -2)
+            //    //{
+            //    //    characterListView.SelectedIndex = PreviouslySelectedIndex;
+            //    //}
+            //});
         }
 
         public SavefileViewModel()
         {
+            Console.WriteLine("New SavefileViewModel constructed");
             SelectSavefileCommand = new RelayCommand(SelectSavefileExecute);
         }
     }

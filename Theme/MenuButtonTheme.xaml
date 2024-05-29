@@ -11,12 +11,23 @@
                         <Grid VerticalAlignment="Stretch"
                               HorizontalAlignment="Stretch"
                               Background="{TemplateBinding Background}">
-                            
-                            <TextBlock Text="{TemplateBinding Property=Content}"
+
+							<TextBlock Text="{TemplateBinding Property=Content}"
                                        VerticalAlignment="Center"
 									   Foreground="Wheat"
-                                       Margin="20,0,0,0" FontFamily="Bahnschrift SemiLight SemiCondensed"/>
-                        </Grid>
+                                       Margin="20,0,0,0" 
+									   FontFamily="Bahnschrift SemiLight SemiCondensed">
+								<TextBlock.Style>
+									<Style TargetType="TextBlock">
+										<Style.Triggers>
+											<DataTrigger Binding="{Binding IsChecked, RelativeSource={RelativeSource AncestorType={x:Type RadioButton}}}" Value="True" >
+												<Setter Property="TextDecorations" Value="Underline" />
+											</DataTrigger>
+										</Style.Triggers>
+									</Style>
+								</TextBlock.Style>
+							</TextBlock>
+						</Grid>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
