@@ -11,6 +11,7 @@ namespace ERDT
     public class SavefileProcessor : ObservableObject
     {
         private readonly string _filePath;
+        public string FilePath => _filePath;
         private readonly int _charManifestAddress = 0x1901D04;
 
         public CharacterData[] characterDataArray;
@@ -30,6 +31,8 @@ namespace ERDT
         }
 
         public EventHandler charDataPopulated;
+        public Boolean WasPopulatedBefore = false;
+        public EventHandler charDataModified;
 
         public SavefileProcessor(string filePath)
         {
@@ -44,10 +47,17 @@ namespace ERDT
                 Console.WriteLine("Populating character data..");
                 populateCharData();
                 Console.WriteLine("Done populating character data.");
-                charDataPopulated?.Invoke(this, EventArgs.Empty);
+                if (WasPopulatedBefore)
+                {
+                    charDataModified?.Invoke(this, EventArgs.Empty);
+                }
+                else
+                {
+                    charDataPopulated?.Invoke(this, EventArgs.Empty);
+                    WasPopulatedBefore = true;
+                }
             });
         }
-
         public List<CharacterData> getCharacterDataList()
         {
             return characterDataArray.Select((charData, index) => charData ?? CharacterData.getEmptyCharacterData(index)).ToList();

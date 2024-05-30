@@ -34,6 +34,28 @@ namespace ERDT.MVVM.ViewModel
             List<CharacterData> charDataList = SharedDataService.SavefileProcessor.getCharacterDataList();
             SelectedCharacterData = charDataList[0];
 
+            SavefileWatcher savefileWatcher = SharedDataService.InitializeSavefileWatcher();
+            savefileWatcher.SavefileChanged += OnSavefileChanged;
+        }
+
+        private void OnSavefileChanged(object sender, EventArgs e)
+        {
+            SharedDataService.SavefileProcessor.charDataModified += HandleNewCharData;
+            SharedDataService.SavefileProcessor.populateCharDataAsync();
+        }
+
+        private void HandleNewCharData(object sender, EventArgs e)
+        {
+            List<CharacterData> newCharDataList = SharedDataService.SavefileProcessor.getCharacterDataList();
+            if (newCharDataList[SelectedCharacterData.slotIndex].Name != SelectedCharacterData.Name)
+            {
+                // Pop-up dialog saying "Major Change in Savefile Detected"?
+                throw new Exception("Huge Change in Savefile?");
+            }
+            else
+            {
+                SelectedCharacterData = newCharDataList[SelectedCharacterData.slotIndex];
+            }
         }
     }
 }

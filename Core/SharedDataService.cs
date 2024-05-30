@@ -9,7 +9,7 @@
             {
                 if (_instance == null)
                 {
-                    
+
                     _instance = new SharedDataService();
                     return _instance;
                 }
@@ -29,6 +29,8 @@
                 {
                     _savefilePath = value;
                     OnPropertyChanged();
+
+                    SavefileWatcher?.stopWatching();
                 }
 
             }
@@ -41,6 +43,8 @@
             get; private set;
         }
 
+        public static SavefileWatcher SavefileWatcher { get; private set; }
+
 
         public SharedDataService()
         {
@@ -51,6 +55,12 @@
         {
             SavefileProcessor = new SavefileProcessor(savefilePath);
             return SavefileProcessor;
+        }
+
+        public static SavefileWatcher InitializeSavefileWatcher()
+        {
+            SavefileWatcher = new SavefileWatcher(SavefileProcessor.FilePath);
+            return SavefileWatcher;
         }
 
     }

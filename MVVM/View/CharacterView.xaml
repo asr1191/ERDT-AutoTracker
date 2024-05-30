@@ -11,47 +11,66 @@
 
 	<UserControl.Resources>
 		<core:SharedDataService x:Key="SharedDataServiceResource" />
+		<Style TargetType="GridViewColumnHeader">
+			<Setter Property="Width" Value="{Binding RelativeSource={RelativeSource Self}, Path=Column.ActualWidth}" />
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="GridViewColumnHeader">
+						<Grid>
+							<Border Background="{TemplateBinding Background}">
+								<ContentPresenter Content="{TemplateBinding Content}" 
+                                                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}" 
+												  Margin="0,2,0,4"
+												  />
+							</Border>
+						</Grid>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
 	</UserControl.Resources>
 
 	<Border Background="#FF131319">
-		<StackPanel Orientation="Horizontal"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Center">
-			<ListView 
-            x:Name="characterListView"
-            IsEnabled="True" 
-            Visibility="Visible"
-            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-            SelectionMode="Single"
-            Width="170"
-            Height="300"
-            Margin="16,0,0,0"
-			ItemsSource="{Binding Path=SavefileProcessor.CharacterDataArrayList, Source={x:Static core:SharedDataService.Instance}}"
-			SelectedItem="{Binding SelectedCharacterData, Mode=TwoWay}">
-
-				<ListView.View>
-					<GridView>
-						<GridViewColumn Header="Name">
-							<GridViewColumn.CellTemplate>
-								<DataTemplate>
-									<TextBlock Text="{Binding Name}" Width="100"/>
-								</DataTemplate>
-							</GridViewColumn.CellTemplate>
-						</GridViewColumn>
-						<GridViewColumn Header="Level">
-							<GridViewColumn.CellTemplate>
-								<DataTemplate>
-									<TextBlock Text="{Binding RuneLevel}" Width="50" TextAlignment="Center"/>
-								</DataTemplate>
-							</GridViewColumn.CellTemplate>
-						</GridViewColumn>
-					</GridView>
-				</ListView.View>
-			</ListView>
-			<StackPanel HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-			    Margin="20"
-				Width="Auto">
+		<Grid HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="16,0,0,0">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="170" />
+				<ColumnDefinition Width="*" />
+			</Grid.ColumnDefinitions>
+		
+		<ListView x:Name="characterListView"
+                      IsEnabled="True" 
+                      Visibility="Visible"
+                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                      SelectionMode="Single"
+                      Width="170"
+                      Height="300"
+                      Margin="0,0,0,0"
+                      ItemsSource="{Binding Path=SavefileProcessor.CharacterDataArrayList, Source={x:Static core:SharedDataService.Instance}}"
+                      SelectedItem="{Binding SelectedCharacterData, Mode=TwoWay}">
+			<ListView.View>
+				<GridView>
+					<GridViewColumn Header="Name">
+						<GridViewColumn.CellTemplate>
+							<DataTemplate>
+								<TextBlock Text="{Binding Name}" Width="100"/>
+							</DataTemplate>
+						</GridViewColumn.CellTemplate>
+					</GridViewColumn>
+					<GridViewColumn Header="Level">
+						<GridViewColumn.CellTemplate>
+							<DataTemplate>
+								<TextBlock Text="{Binding RuneLevel}" Width="50" TextAlignment="Center"/>
+							</DataTemplate>
+						</GridViewColumn.CellTemplate>
+					</GridViewColumn>
+				</GridView>
+			</ListView.View>
+		</ListView>
+			<StackPanel Grid.Column="1"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Margin="20">
 				<TextBlock 
 					FontSize="20" 
 					TextAlignment="Center"
@@ -74,6 +93,6 @@
 				</TextBlock>
 
 			</StackPanel>
-		</StackPanel>
+		</Grid>
 	</Border>
 </UserControl>

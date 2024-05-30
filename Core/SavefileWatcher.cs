@@ -1,9 +1,9 @@
 ﻿using System;
 using System.IO;
 
-namespace ERDT
+namespace ERDT.Core
 {
-    internal class SavefileWatcher
+    public class SavefileWatcher
     {
         private readonly FileSystemWatcher _watcher;
         public EventHandler SavefileChanged;
