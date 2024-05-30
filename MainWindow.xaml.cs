@@ -136,7 +136,7 @@ namespace ERDT
 
                 characterListView.Visibility = Visibility.Visible;
                 characterListView.IsEnabled = true;
-                characterListView.ItemsSource = savefileProcessor.getCharacterDataList();
+                characterListView.ItemsSource = savefileProcessor.CharacterDataArrayList;
 
                 if (PreviouslySelectedIndex != -2)
                 {

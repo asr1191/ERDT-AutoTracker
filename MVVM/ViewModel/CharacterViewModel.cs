@@ -7,16 +7,32 @@ namespace ERDT.MVVM.ViewModel
 {
     public class CharacterViewModel : ObservableObject
     {
+        private CharacterData PrevSelectedCharacterData;
         private CharacterData _selectedCharacterData;
         public CharacterData SelectedCharacterData
         {
-            get => _selectedCharacterData;
+            get
+            {
+                return _selectedCharacterData;
+            }
+            private set
+            {
+                _selectedCharacterData = value;
+                OnPropertyChanged();   
+            }
+        }
+
+        private int _selectedCharacterIndex;
+        public int SelectedCharacterIndex
+        {
+            get => _selectedCharacterIndex;
             set
             {
-                if (_selectedCharacterData != value)
+                if (value >= 0)
                 {
-                    _selectedCharacterData = value;
-                    Console.WriteLine("Selected character: " +  _selectedCharacterData.Name);
+                    _selectedCharacterIndex = value;
+                    Console.WriteLine("Selected character index: " + value);
+                    SelectedCharacterData = SharedDataService.SavefileProcessor.CharacterDataArrayList[value];
                     OnPropertyChanged();
                 }
             }
@@ -31,30 +47,33 @@ namespace ERDT.MVVM.ViewModel
         public void OnCharDataPopulated(object o, EventArgs e)
         {
             Console.WriteLine("CharacterViewModel: OnCharDataPopulated");
-            List<CharacterData> charDataList = SharedDataService.SavefileProcessor.getCharacterDataList();
-            SelectedCharacterData = charDataList[0];
+            List<CharacterData> charDataList = SharedDataService.SavefileProcessor.CharacterDataArrayList;
+            SelectedCharacterIndex = 0;
 
             SavefileWatcher savefileWatcher = SharedDataService.InitializeSavefileWatcher();
             savefileWatcher.SavefileChanged += OnSavefileChanged;
+            SharedDataService.SavefileProcessor.charDataModified += HandleNewCharData;
         }
 
         private void OnSavefileChanged(object sender, EventArgs e)
         {
-            SharedDataService.SavefileProcessor.charDataModified += HandleNewCharData;
+            Console.WriteLine("Savefile change detected!");
+            Console.WriteLine("Repopulating char data");
+
+            PrevSelectedCharacterData = SharedDataService.SavefileProcessor.CharacterDataArrayList[SelectedCharacterIndex];
             SharedDataService.SavefileProcessor.populateCharDataAsync();
         }
 
         private void HandleNewCharData(object sender, EventArgs e)
         {
-            List<CharacterData> newCharDataList = SharedDataService.SavefileProcessor.getCharacterDataList();
-            if (newCharDataList[SelectedCharacterData.slotIndex].Name != SelectedCharacterData.Name)
+            Console.WriteLine("CharacterViewModel: HandleNewCharData: Char data repopulated");
+            if (SharedDataService.SavefileProcessor.CharacterDataArrayList[PrevSelectedCharacterData.slotIndex].Name == PrevSelectedCharacterData.Name)
             {
-                // Pop-up dialog saying "Major Change in Savefile Detected"?
-                throw new Exception("Huge Change in Savefile?");
-            }
-            else
+                SelectedCharacterIndex = PrevSelectedCharacterData.slotIndex;
+                Console.WriteLine("Set SelectedCharacterData");
+            } else
             {
-                SelectedCharacterData = newCharDataList[SelectedCharacterData.slotIndex];
+                throw new Exception("Major Savefile Change Detected!");
             }
         }
     }

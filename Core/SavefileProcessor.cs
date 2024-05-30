@@ -58,7 +58,7 @@ namespace ERDT
                 }
             });
         }
-        public List<CharacterData> getCharacterDataList()
+        private List<CharacterData> getCharacterDataList()
         {
             return characterDataArray.Select((charData, index) => charData ?? CharacterData.getEmptyCharacterData(index)).ToList();
         }
@@ -79,7 +79,7 @@ namespace ERDT
                     }
                 }
             }
-            _characterDataArrayList = getCharacterDataList();
+            CharacterDataArrayList = getCharacterDataList();
         }
     }
 }
