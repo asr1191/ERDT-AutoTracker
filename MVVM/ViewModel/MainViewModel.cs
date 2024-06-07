@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using ERDT.Core;
 
 namespace ERDT.MVVM.ViewModel
@@ -24,7 +25,7 @@ namespace ERDT.MVVM.ViewModel
             }
         }
 
-        private int _selectedRadioIndex = 1;
+        private int _selectedRadioIndex = 0;
         public int SelectedRadioIndex
         {
             get => _selectedRadioIndex;
@@ -50,6 +51,8 @@ namespace ERDT.MVVM.ViewModel
 
         public MainViewModel()
         {
+            Task.Run(() => SupabaseHelper.InitSupabase()); // This is async 
+
             LoginVM = new LoginViewModel();
             CharacterVM = new CharacterViewModel();
 
@@ -57,14 +60,12 @@ namespace ERDT.MVVM.ViewModel
             SavefileVM.CharDataPopulated += onCharDataPopulated_SavefileVM;
 
             // Setting CurrentView
-            CurrentView = SavefileVM; // For now
+            CurrentView = LoginVM; // For now
 
             // Setting up Commands for UI
             HomeViewCommand = new RelayCommand(o => { CurrentView = LoginVM; });
             SavefileViewCommand = new RelayCommand(o => { CurrentView = SavefileVM; });
             CharacterViewCommand = new RelayCommand(o => { CurrentView = CharacterVM; });
         }
-
-        
     }
 }

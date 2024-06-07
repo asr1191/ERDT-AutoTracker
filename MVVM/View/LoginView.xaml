@@ -17,7 +17,10 @@
                        Margin="0,0,0,10"/>
             <Button Content="Login using Browser"
                     Width="150"
-                    Height="30"/>
+                    Height="30"
+					Command="{Binding LoginButtonClickHandler}"
+					IsEnabled="{Binding IsLoginButtonEnabled}"
+					/>
         </StackPanel>
     </Border>
 </UserControl>
