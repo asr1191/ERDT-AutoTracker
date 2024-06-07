@@ -37,8 +37,8 @@
 				<ColumnDefinition Width="170" />
 				<ColumnDefinition Width="*" />
 			</Grid.ColumnDefinitions>
-		
-		<ListView x:Name="characterListView"
+
+            <ListView x:Name="characterListView"
                       IsEnabled="True" 
                       Visibility="Visible"
                       ScrollViewer.HorizontalScrollBarVisibility="Disabled"
@@ -47,8 +47,8 @@
                       Height="300"
                       Margin="0,0,0,0"
                       ItemsSource="{Binding Path=SavefileProcessor.CharacterDataArrayList, Source={x:Static core:SharedDataService.Instance}}"
-                      SelectedItem="{Binding SelectedCharacterData, Mode=TwoWay}">
-			<ListView.View>
+                      SelectedIndex="{Binding SelectedCharacterIndex, Mode=TwoWay}">
+                <ListView.View>
 				<GridView>
 					<GridViewColumn Header="Name">
 						<GridViewColumn.CellTemplate>
@@ -75,7 +75,7 @@
 					FontSize="20" 
 					TextAlignment="Center"
 					Foreground="Wheat"
-					Text="{Binding SelectedCharacterData.Name}"/>
+					Text="{Binding SelectedCharacterData.Name}" />
 
 
 				<TextBlock 

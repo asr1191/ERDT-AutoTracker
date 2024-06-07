@@ -24,6 +24,7 @@ namespace ERDT.Core
         public void stopWatching()
         {
             _watcher.EnableRaisingEvents = false;
+            SavefileChanged = null;
         }
     }
 }
