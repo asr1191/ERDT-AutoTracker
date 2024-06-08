@@ -67,17 +67,17 @@
                 
             </StackPanel>
 
-            <TextBlock
+			<TextBlock
                 HorizontalAlignment="Left"
                 Margin="20,0,0,0"
                 Foreground="Wheat"
                 FontSize="20"
                 VerticalAlignment="Center"
-                Grid.Column="1" >
-                Welcome back, amalsraj95@gmail.com!
-            </TextBlock>
+                Grid.Column="1" 
+				Text="{Binding WelcomeMessage}"
+			/>
 
-            <ContentControl Grid.Row="1"
+			<ContentControl Grid.Row="1"
                             Grid.Column="1"
                             Content="{Binding CurrentView}"
                             />

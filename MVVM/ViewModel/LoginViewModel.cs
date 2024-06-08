@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading.Tasks;
+using System.Windows;
 using ERDT.Core;
 
 namespace ERDT.MVVM.ViewModel
@@ -18,25 +20,43 @@ namespace ERDT.MVVM.ViewModel
             }
         }
 
+        private void OnSupabaseInitialized(object sender, EventArgs e)
+        {
+            IsLoginButtonEnabled = true;
+        }
 
-        private async void LoginButtonClickHandler_Execute(object commandParameter)
+        private void LoginButtonClickHandler_Execute(object commandParameter)
         {
             Console.WriteLine("In Login Button Click");
-            IsLoginButtonEnabled = false;
-
-            IsLoginButtonEnabled = !await SupabaseHelper.SignInWithGoogle();
+            var mainWindow = Application.Current.MainWindow;
+            Task.Run(() => SupabaseHelper.SignInWithGoogle(mainWindow));
         }
 
         public LoginViewModel() 
         {
             LoginButtonClickHandler = new RelayCommand(LoginButtonClickHandler_Execute);
             SupabaseHelper.supabaseInitialized += OnSupabaseInitialized;
+
+            SupabaseHelper.supabase.Auth.AddStateChangedListener((sender, state) =>
+            {
+                switch (state)
+                {
+                    case Supabase.Gotrue.Constants.AuthState.SignedIn:
+                        IsLoginButtonEnabled = false;
+                        break;
+
+                    case Supabase.Gotrue.Constants.AuthState.SignedOut:
+                        IsLoginButtonEnabled = true; 
+                        break;
+
+                    case Supabase.Gotrue.Constants.AuthState.UserUpdated:
+                        IsLoginButtonEnabled = false;
+                        Console.WriteLine("Login Button Disabled");
+                        break;
+                }
+            });
         }
 
-        private void OnSupabaseInitialized(object sender, EventArgs e)
-        {
-            IsLoginButtonEnabled = true;
-        }
     }
 
 }

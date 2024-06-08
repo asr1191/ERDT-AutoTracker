@@ -12,6 +12,9 @@ namespace ERDT.Core
 {
     internal static class SupabaseHelper
     {
+        private const string PROJECT_URL = "https://yjdfxteaqjixjnqydiut.supabase.co";
+        private const string PUBLIC_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlqZGZ4dGVhcWppeGpucXlkaXV0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTcyMTMwNzcsImV4cCI6MjAzMjc4OTA3N30.RY80K44EDMW68tazaRRwf0UDcmFziTNmeVcb_zFAW8E";
+
         public static Supabase.Client supabase { get; set; }
         public static EventHandler supabaseInitialized;
         private static HttpListener httpListener;
@@ -29,63 +32,56 @@ namespace ERDT.Core
             }
         }
 
-        public static async Task InitSupabase()
+        public static void PreInitSupabase()
         {
-            var url = "https://yjdfxteaqjixjnqydiut.supabase.co";
-            var key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlqZGZ4dGVhcWppeGpucXlkaXV0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTcyMTMwNzcsImV4cCI6MjAzMjc4OTA3N30.RY80K44EDMW68tazaRRwf0UDcmFziTNmeVcb_zFAW8E";
-
             var options = new Supabase.SupabaseOptions
             {
                 AutoConnectRealtime = true,
                 Schema = "public",
             };
 
-            supabase = new Supabase.Client(url, key, options);
+            supabase = new Supabase.Client(PROJECT_URL, PUBLIC_KEY, options);
+            supabase.Auth.SetPersistence(new SupabaseSessionPersistence());
+       
+        }
+
+        public static async Task InitSupabaseAsync()
+        {
             await supabase.InitializeAsync();
+            await setupNetworkStatus();
 
             supabaseInitialized.Invoke(typeof(SupabaseHelper), EventArgs.Empty);
 
-            Console.WriteLine("Supabase initialized.");
+            supabase.Auth.LoadSession();
+            await supabase.Auth.RetrieveSessionAsync();
 
+            Console.WriteLine("Supabase initialized.");
         }
 
-        public static async Task<Boolean> SignInWithGoogle()
+
+        private static async Task setupNetworkStatus()
+        {
+            var status = new NetworkStatus();
+            status.Client = supabase.Auth;
+            var testURL = "https://8.8.8.8";
+            supabase.Auth.Online = await status.StartAsync(testURL);
+        }
+
+        public static async Task<Boolean> SignInWithGoogle(Window mainWindow)
         {
             var redirectURI = GetRedirectURI();
             httpListener = CreateRedirectListener(redirectURI);
 
             // Close HTTPListener when application closes
-            Application.Current.MainWindow.Closed += CloseHTTPListenerOnWindowClose;
+            mainWindow.Closed += CloseHTTPListenerOnWindowClose;
 
             var ProviderAuthState = await supabase.Auth.SignIn(Provider.Google, new SignInOptions { RedirectTo = redirectURI, FlowType = OAuthFlowType.PKCE, Scopes = "openid profile email" });
-            output($"Auth URL for Browser: {ProviderAuthState.Uri.ToString()}");
+            output($"Auth URL for Browser: {ProviderAuthState.Uri}");
 
             // Opens request in the browser.
             System.Diagnostics.Process.Start(ProviderAuthState.Uri.ToString());
 
-            supabase.Auth.AddStateChangedListener((sender, changed) =>
-            {
-                switch (changed)
-                {
-                    case AuthState.SignedIn:
-                        output("AuthState Changed: SignedIn");
-                        break;
-                    case AuthState.SignedOut:
-                        output("AuthState Changed: SignedOut");
-                        break;
-                    case AuthState.UserUpdated:
-                        output("AuthState Changed: UserUpdated");
-                        break;
-                    case AuthState.PasswordRecovery:
-                        output("AuthState Changed: PasswordRecovery");
-                        break;
-                    case AuthState.TokenRefreshed:
-                        output("AuthState Changed: SignedIn");
-                        break;
-                }
-            });
-
-            var session = await ListenToCallback(httpListener, ProviderAuthState);
+            var session = await ListenToCallback(httpListener, ProviderAuthState, mainWindow);
 
             /////////
 
@@ -98,13 +94,13 @@ namespace ERDT.Core
 
         }
 
-        private static async Task<Session> ListenToCallback(HttpListener http, ProviderAuthState providerAuthState) 
+        private static async Task<Session> ListenToCallback(HttpListener http, ProviderAuthState providerAuthState, Window mainWindow) 
         {
             // Waits for the OAuth authorization response.
             var context = await http.GetContextAsync();
 
             // Brings this app to foreground
-            Application.Current.MainWindow.Activate();
+            Application.Current.Dispatcher.Invoke(() => mainWindow.Activate());
 
             var response = context.Response;
             var request = context.Request;
@@ -118,7 +114,6 @@ namespace ERDT.Core
                 response.OutputStream.Close();
 
                 var session = await supabase.Auth.ExchangeCodeForSession(providerAuthState.PKCEVerifier, request.QueryString.Get("code"));
-
                 return session;
             }
             else
@@ -128,8 +123,6 @@ namespace ERDT.Core
 
                 return null;
             }
-
-
         }
 
         private static void CloseHTTPListenerOnWindowClose(object sender, EventArgs e) 
@@ -137,17 +130,6 @@ namespace ERDT.Core
             httpListener.Stop();
             httpListener.Close();
         }
-
-        //private static async Task HandleLogin(LoginResult result)
-        //{
-        //    var authResponse = await supabase.Auth.SetSession(result.AccessToken, result.RefreshToken);
-        //    if (authResponse.User != null)
-        //    {
-        //        // Update UI with login status
-        //        Console.WriteLine($"Logged in as: {authResponse.User.Email}");
-        //        // Load the main content or update the UI as needed
-        //    }
-        //}
 
         private static string GetRedirectURI()
         {

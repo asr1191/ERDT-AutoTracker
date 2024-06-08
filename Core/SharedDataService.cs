@@ -9,15 +9,12 @@
             {
                 if (_instance == null)
                 {
-
                     _instance = new SharedDataService();
                     return _instance;
                 }
                 return _instance;
             }
         }
-
-        //public string SavefilePath { get; set; } = "Please select your Elden Ring savefile!";
 
         private string _savefilePath = "Please select your Elden Ring savefile!";
         public string SavefilePath
@@ -32,9 +29,7 @@
 
                     SavefileWatcher?.stopWatching();
                 }
-
             }
-
         }
 
 
@@ -44,12 +39,6 @@
         }
 
         public static SavefileWatcher SavefileWatcher { get; private set; }
-
-
-        public SharedDataService()
-        {
-            // Constructor
-        }
 
         public static SavefileProcessor InitalizeSavefileProcessor(string savefilePath)
         {

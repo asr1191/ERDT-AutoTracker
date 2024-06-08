@@ -195,6 +195,7 @@
     <Compile Include="Core\RelayCommand.cs" />
     <Compile Include="Core\SharedDataService.cs" />
     <Compile Include="Core\SupabaseHelper.cs" />
+    <Compile Include="Core\SupabaseSessionPersistence.cs" />
     <Compile Include="MainWindowRedesign.xaml.cs">
       <DependentUpon>MainWindowRedesign.xaml</DependentUpon>
     </Compile>

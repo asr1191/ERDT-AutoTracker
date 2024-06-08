@@ -11,14 +11,11 @@ namespace ERDT.MVVM.ViewModel
         private CharacterData _selectedCharacterData;
         public CharacterData SelectedCharacterData
         {
-            get
-            {
-                return _selectedCharacterData;
-            }
+            get => _selectedCharacterData;
             private set
             {
                 _selectedCharacterData = value;
-                OnPropertyChanged();   
+                OnPropertyChanged();
             }
         }
 
